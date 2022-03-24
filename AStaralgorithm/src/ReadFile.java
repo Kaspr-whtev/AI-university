@@ -16,8 +16,8 @@ public class ReadFile {
                 nodes.add(node);
             }
             for (int n=0; n<count;n++){
-                if (lines.get(n+count+1) != "-1" && !nodes.isEmpty()){
-                    String[] split = lines.get(n+count+1).split("\\s+");
+                if (lines.get(n+count+1) != "-1"){
+                    String[] split = lines.get(n+count+1).split(" ");
                     for (String connection: split){
                         int index = Integer.parseInt(connection);
                         Node child = getByIndex(index, nodes);

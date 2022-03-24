@@ -13,43 +13,37 @@ public class Algorithm {
         System.out.println(String.format("To calculate the %s heuristic it took %d", heuristic, time));
     }
 
-    public static ArrayList<Node> AStar(Node currentNode){
+    public static ArrayList<Node> AStar(Node currentNode, Node goal){
         ArrayList<Node> open = new ArrayList<>();
-        ArrayList<Node> closed = new ArrayList<>();
         currentNode.g = 0;
         open.add(currentNode);
-        Node node = open.get(0);
+        currentNode.F = currentNode.h;
         long start = System.nanoTime();
 
-        while (currentNode.hasNext()){
-            node = open.get(0);
+        while (!open.isEmpty()){
+            Node node = open.get(0);
+
             for (Node n : open){
                 if (n.F < node.F)
                     continue;
                 node = n;
             }
-            if (node.children.isEmpty()){
+//            System.out.println(node.toString());
+            if (node == goal){
                 long finish = System.nanoTime();
                 long time = finish - start;
                 System.out.println(String.format("To find the path it took %d", time));
                 return getPath(node);
             }
             open.remove(node);
-            closed.add(node);
             for (Node child : node.children){
-                if (closed.contains(child))
-                    continue;
                 double gScore = node.g + child.weight;
-                boolean betterGScore = false;
-                if (!open.contains(child)){
-                    open.add(child);
-                    betterGScore = true;
-                } else if (gScore > child.g)
-                    betterGScore = true;
-                if (betterGScore){
+                if (gScore > child.g){
                     child.parent = node;
                     child.g = gScore;
-                    child.F = child.g + child.h;
+                    child.F = gScore + child.h;
+                    if (!open.contains(child))
+                        open.add(child);
                 }
             }
         }

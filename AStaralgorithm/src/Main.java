@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class Main {
-    private static String path = "data/test_small.dag";
+    private static String path = "data/test_xlarge.dag";
 
     public static void main(String[] args){
         ArrayList<Node> nodes = ReadFile.read(path);
@@ -11,7 +11,7 @@ public class Main {
         //start.estimate(Heuristic.MostNodes);
 //        for (Node node : nodes)
 //            System.out.println(node.toString());
-        ArrayList<Node> path = Algorithm.AStar(start);
+        ArrayList<Node> path = Algorithm.AStar(start, nodes.get(nodes.size()-1));
         String finalPath = "";
         double totalWeight = 0;
         for (Node node : path) {
