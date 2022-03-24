@@ -12,7 +12,7 @@ public class ReadFile {
             int count = Integer.parseInt(lines.get(0));
             ArrayList<Node> nodes = new ArrayList<>();
             for (int n=1; n<count+1; n++){
-                Node node = new Node(n, Double.parseDouble(lines.get(n)));
+                Node node = new Node(n-1, Double.parseDouble(lines.get(n)));
                 nodes.add(node);
             }
             for (int n=0; n<count;n++){
@@ -34,7 +34,7 @@ public class ReadFile {
         return null;
     }
 
-    private static Node getByIndex(int index, ArrayList<Node> nodes){
+    public static Node getByIndex(int index, ArrayList<Node> nodes){
         for (int n=0; n<nodes.size(); n++){
             if (nodes.get(n).index == index)
                 return nodes.get(n);

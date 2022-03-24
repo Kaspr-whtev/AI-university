@@ -5,11 +5,12 @@ import java.util.Random;
 public class Node {
     public int index;
     public double weight; // weight of this node
-    private double g; //cost from the start to the node
-    private double h; //cost to the end from the node, estimated with a heuristic
-    private double F = g + h; //function that A* uses to select a path
+    public double g; //cost from the start to the node
+    public double h; //cost to the end from the node, estimated with a heuristic
+    public double F = g + h; //function that A* uses to select a path
     public ArrayList<Node> parents;
     public ArrayList<Node> children;
+    public Node parent;
 
     public Node(int index, double weight) {
         this.index = index;
@@ -39,67 +40,104 @@ public class Node {
         return children.size() != 0;
     }
 
-    public Node traverse(){
-        if (!hasNext())
-            throw new IndexOutOfBoundsException();
-        Node nextNode = children.get(0);
-        for (Node child: children) {
-            if (child.g < g)
-                child.g = g + child.weight;
-            if (child.F < nextNode.F)
+    public Node getBestChild(){
+        if (children.isEmpty())
+            return null;
+        Node best = this.children.get(0);
+        for (Node node : children){
+            if (node.F < best.F)
                 continue;
-            nextNode = child;
+            best = node;
         }
-        return nextNode;
+        return best;
     }
 
+//    public Node traverse(){
+//        if (!hasNext())
+//            throw new IndexOutOfBoundsException();
+//        Node nextNode = children.get(0);
+//        for (Node child: children) {
+//            if (child.g < g)
+//                child.g = g + child.weight;
+//            if (child.F < nextNode.F)
+//                continue;
+//            nextNode = child;
+//        }
+//        return nextNode;
+//    }
+
     public void estimate(Heuristic heuristic) {
+        long start = System.nanoTime();
+        long finish;
+        long time;
         switch (heuristic){
             case BruteForce:
                 calculateBruteForce();
+                finish = System.nanoTime();
+                time = finish - start;
+                System.out.println("To calculate the brute force heuristics it took " + time);
                 break;
 //            case LeastNodes:
 //                calculateLeastNodes();
 //                break;
             case Random:
                 calculateRandom();
+                finish = System.nanoTime();
+                time = finish - start;
+                System.out.println("To calculate the random heuristics it took " + time);
                 break;
-            case LeastNodes:
+            case FarthestNeighbor:
+                calculateFarthestNeighbor();
+                finish = System.nanoTime();
+                time = finish - start;
+                System.out.println("To calculate the nearest neighbor heuristics it took " + time);
+                break;
+            case MostNodes:
             default:
-                calculateLeastNodes();
+                calculateMostNodes();
+                finish = System.nanoTime();
+                time = finish - start;
+                System.out.println("To calculate the most nodes heuristics it took " + time);
         }
     }
 
     private void calculateBruteForce(){
-        if (parents.size() !=0)
+        if (children.size() !=0)
             return;
-        h = bruteForceHeuristic();
+        bruteForceHeuristic(0);
     }
-    private double bruteForceHeuristic(){
+    private void bruteForceHeuristic(double currentWeight){
         if (h == 0)
-            h=weight;
-        ArrayList<Double> childrenWeights = new ArrayList<>();
-        for (Node child : children){
-            double childWeight = child.bruteForceHeuristic();
-            childrenWeights.add(childWeight);
-        }
-        if (childrenWeights.size() != 0){
-            h = Collections.max(childrenWeights);
-        }
-        return h;
+            h = weight + currentWeight;
+        else if (h-weight < currentWeight)
+            h = weight + currentWeight;
+        else
+            return;
+        for (Node parent : parents)
+            parent.bruteForceHeuristic(h);
     }
 
-    private void calculateLeastNodes(){
-        h = leastNodesHeuristic();
+    private void calculateMostNodes(){
+        h = mostNodesHeuristic();
     }
-    private int leastNodesHeuristic(){
-        if (children.size() == 0)
+    private int mostNodesHeuristic(){
+        if (children.isEmpty())
             return 0;
-        return children.get(0).leastNodesHeuristic();
+        ArrayList<Integer> NONodes = new ArrayList<>();
+        for (Node child : children){
+            int number = child.mostNodesHeuristic();
+            NONodes.add(number);
+        }
+        h = Collections.max(NONodes)+1;
+        return Collections.max(NONodes)+1;
     }
 
     private void calculateRandom(){
         Random rand = new Random(children.size());
         h = rand.nextDouble();
+    }
+
+    private void calculateFarthestNeighbor(){
+        h = weight;
     }
 }
