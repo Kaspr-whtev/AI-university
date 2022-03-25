@@ -52,52 +52,20 @@ public class Node {
         return best;
     }
 
-//    public Node traverse(){
-//        if (!hasNext())
-//            throw new IndexOutOfBoundsException();
-//        Node nextNode = children.get(0);
-//        for (Node child: children) {
-//            if (child.g < g)
-//                child.g = g + child.weight;
-//            if (child.F < nextNode.F)
-//                continue;
-//            nextNode = child;
-//        }
-//        return nextNode;
-//    }
-
     public void estimate(Heuristic heuristic) {
-        long start = System.nanoTime();
-        long finish;
-        long time;
         switch (heuristic){
             case BruteForce:
                 calculateBruteForce();
-                finish = System.nanoTime();
-                time = finish - start;
-                System.out.println("To calculate the brute force heuristics it took " + time);
                 break;
-//            case LeastNodes:
-//                calculateLeastNodes();
-//                break;
             case Random:
                 calculateRandom();
-                finish = System.nanoTime();
-                time = finish - start;
-                System.out.println("To calculate the random heuristics it took " + time);
                 break;
             case FarthestNeighbor:
                 calculateFarthestNeighbor();
-                finish = System.nanoTime();
-                time = finish - start;
-                System.out.println("To calculate the nearest neighbor heuristics it took " + time);
                 break;
             case MostNodes:
             default:
                 calculateMostNodes();
-                finish = System.nanoTime();
-                time = finish - start;
-                System.out.println("To calculate the most nodes heuristics it took " + time);
         }
     }
 
@@ -132,8 +100,9 @@ public class Node {
         return Collections.max(NONodes)+1;
     }
 
+    private static final Random rand = new Random(5);
+
     private void calculateRandom(){
-        Random rand = new Random(children.size());
         h = rand.nextDouble();
     }
 

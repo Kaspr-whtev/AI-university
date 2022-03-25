@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReadFile {
+    //this method converts data from a file into a graph
     public static ArrayList<Node> read(String path){
         try{
             List<String> lines = Files.readAllLines(Paths.get(path), StandardCharsets.UTF_8);

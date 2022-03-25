@@ -2,17 +2,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Algorithm {
-    public static void calculateHeuristics(ArrayList<Node> nodes, Heuristic heuristic){
-        long start = System.currentTimeMillis();
 
-        for (Node node : nodes)
-            node.estimate(heuristic);
-
-        long finish = System.currentTimeMillis();
-        long time = finish - start;
-        System.out.println(String.format("To calculate the %s heuristic it took %d", heuristic, time));
-    }
-
+    //main algorithm, it uses the calculated heuristic to traverse the graph via the best path
+    //written based on pseudocode from https://en.wikipedia.org/wiki/A*_search_algorithm
     public static ArrayList<Node> AStar(Node currentNode, Node goal){
         ArrayList<Node> open = new ArrayList<>();
         currentNode.g = 0;
@@ -21,14 +13,14 @@ public class Algorithm {
         long start = System.nanoTime();
 
         while (!open.isEmpty()){
-            Node node = open.get(0);
 
+            Node node = open.get(0);
             for (Node n : open){
                 if (n.F < node.F)
                     continue;
                 node = n;
             }
-//            System.out.println(node.toString());
+
             if (node == goal){
                 long finish = System.nanoTime();
                 long time = finish - start;
@@ -38,7 +30,7 @@ public class Algorithm {
             open.remove(node);
             for (Node child : node.children){
                 double gScore = node.g + child.weight;
-                if (gScore > child.g){
+                if (gScore >= child.g){
                     child.parent = node;
                     child.g = gScore;
                     child.F = gScore + child.h;
@@ -47,8 +39,6 @@ public class Algorithm {
                 }
             }
         }
-
-
         long finish = System.nanoTime();
         long time = finish - start;
         System.out.println(String.format("Failed to find a path, time: %d", time));
@@ -65,6 +55,7 @@ public class Algorithm {
         return path;
     }
 
+    //this method adds the synthetic parent and child to the graph so there is a consistent start and end point
     public static ArrayList<Node> addStartEnd(ArrayList<Node> nodes){
         ArrayList<Node> newNodes = addMainParent(nodes);
         newNodes = addMainChild(newNodes);
@@ -81,7 +72,7 @@ public class Algorithm {
         return nodes;
     }
     private static ArrayList<Node> addMainChild(ArrayList<Node> nodes){
-        Node child = new Node(nodes.size(), 0);
+        Node child = new Node(nodes.size()-1, 0);
         for (Node node : nodes){
             if (node.children.isEmpty()){
                 node.addChild(child);
