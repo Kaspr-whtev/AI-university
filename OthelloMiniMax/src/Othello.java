@@ -63,12 +63,12 @@ public class Othello {
     //checks if a game piece of player p can be placed on coordinates r, c as per the rules
     //i.e. would it capture any of the opponents pieces
     private boolean validMove(char p, int r, int c){
-        if (!this.onBoard(r,c) || board[r][c] != empty)
-            return false;
-        boolean res;
-        for (int d = 0; d < directions.length; d++) {
-            res = validInDirection(p, r, c, d);
-            if (res) return true;
+        if (this.onBoard(r,c) && board[r][c] == empty) {
+            boolean res;
+            for (int d = 0; d < directions.length; d++) {
+                res = validInDirection(p, r, c, d);
+                if (res) return true;
+            }
         }
         return false;
     }

@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class MiniMaxPlayer extends Player{
-    private int depth = 4; //the depth of the minimax search
+    private int depth = 5; //the depth of the minimax search
     private Heuristic heuristic = Heuristic.PieceParity;
 
     public MiniMaxPlayer(String name) {
@@ -44,7 +44,7 @@ public class MiniMaxPlayer extends Player{
     }
 
     public float minimax(Othello game, float a, float b, int depth, char p, boolean maximizingPlayer){
-        if (depth == 0 || game.anyMove(p))
+        if (depth == 0 || !game.anyMove(p))
             return HeuristicEval.getValue(heuristic, game, p);
         ArrayList<int[]> availableMoves = game.getValidMoves(p);
         if (maximizingPlayer){

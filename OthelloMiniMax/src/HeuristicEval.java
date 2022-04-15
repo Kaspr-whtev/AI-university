@@ -65,15 +65,15 @@ public class HeuristicEval {
     private static float evalCorners(Othello game, char player){
         ArrayList<int[]> corners = new ArrayList<>();
         corners.add(new int[]{0, 0});
-        corners.add(new int[]{0, game.getBoard().length});
-        corners.add(new int[]{game.getBoard().length, 0});
-        corners.add(new int[]{game.getBoard().length, game.getBoard().length});
+        corners.add(new int[]{0, game.getBoard().length-1});
+        corners.add(new int[]{game.getBoard().length-1, 0});
+        corners.add(new int[]{game.getBoard().length-1, game.getBoard().length-1});
 
         float max = 0;
         float min = 0;
 
-//        ArrayList<int[]> maxMoves = game.getValidMoves(player);
-//        ArrayList<int[]> minMoves = game.getValidMoves(game.otherPlayer(player));
+        ArrayList<int[]> maxMoves = game.getValidMoves(player);
+        ArrayList<int[]> minMoves = game.getValidMoves(game.otherPlayer(player));
         //for now only evaluates corners owned,
         //not potential corners (those that could be captured in the next move)
 
@@ -82,6 +82,14 @@ public class HeuristicEval {
                 max += 4;
             else if (game.getBoard()[corner[0]][corner[1]] == game.otherPlayer(player))
                 min += 4;
+            for (int[] maxMove : maxMoves){
+                if (maxMove[0] == corner[0] && maxMove[1] == corner[1])
+                    max += 4;
+            }
+            for (int[] minMove : minMoves){
+                if (minMove[0] == corner[0] && minMove[1] == corner[1])
+                    min += 4;
+            }
         }
         if (max+min != 0)
             return 100*(max-min)/(max+min);
