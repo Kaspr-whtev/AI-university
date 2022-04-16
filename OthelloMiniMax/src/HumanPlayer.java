@@ -1,8 +1,9 @@
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+//used when a person wishes to play
 public class HumanPlayer extends Player{
+    //marker represents the spaces where a player can place their piece
     private char marker = 'x';
 
     public HumanPlayer(String name){
@@ -21,6 +22,11 @@ public class HumanPlayer extends Player{
         this.marker = marker;
     }
 
+    //main method
+    //reads input from the terminal, checks if it is valid and if it is a legal move, rules-wise
+    //if a player input -1 for the first coordinate, then they concede
+    //if there are no moves to be made the player is informed and the turn is skipped
+    //the method visualises the moves the player can make with the marker
     @Override
     public int[] move(Othello game) {
         int[] move = new int[0];
@@ -35,6 +41,7 @@ public class HumanPlayer extends Player{
         int row;
         int col;
         System.out.println("Your available moves, marked as: " + marker);
+        //visualize potential moves
         printAvailableMoves(game, availableMoves, marker);
         while (!validInput){
             System.out.println("Enter your move, row col (-1 to concede)");
@@ -60,6 +67,9 @@ public class HumanPlayer extends Player{
         return move;
     }
 
+    //creates a copy of the game and marks the spaces indicated in availableMoves with marker
+    // as moves the player can make
+    //then it prints if out
     private static void printAvailableMoves(Othello game, ArrayList<int[]> availableMoves, char marker){
         Othello copy = new Othello(game);
         for (int[] space : availableMoves){
